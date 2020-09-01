@@ -1,12 +1,14 @@
-# To run python3 linearRegression.py
-# Definition
-# 
-# Sources
-# 
+"""
+## Author: Francisco Palacios Arriaga
+## Credits: Amit Yadav from Coursera, https://www.coursera.org/projects/linear-regression
+## Version: 1.0.0, 1 Sept 2020
+## Maintainer: Francisco Palacios Arriaga
+## Email: f.palacios.arriaga@gmail.com
+## Dataset: Computer Hardware Data Set, https://archive.ics.uci.edu/ml/datasets/Computer+Hardware
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt
-
 class LinearModel:
     def __init__(self, num_features):
         self.num_features = num_features
@@ -17,7 +19,7 @@ class LinearModel:
         y = self.b + np.dot(X, self.W)
         return y
     
-    def compute_loss(self, y, y_true):c
+    def compute_loss(self, y, y_true):
         loss = np.sum(np.square(y - y_true))
         return loss/(2*y.shape[0])
     
