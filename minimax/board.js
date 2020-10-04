@@ -1,7 +1,4 @@
-let board = [
-  ['O', 'O', 'X'],
-  ['O', 'X', 'O'],
-  ['X', 'O', 'X']]
+let board = [];
 
 let w;
 let h;
@@ -12,6 +9,7 @@ var currPlayer = person;
 
 let boardSize = 3;
 
+/*
 function checkHorizontal(list) {
   for (i = 1; i < list.length; i++) {
     // console.log(`${list[i - 1]} - ${list[i]}`);
@@ -46,13 +44,7 @@ function checkDiagonalTD() {
 
 function checkDiagonalDT() {
   for (let i = 1; i < boardSize; i++) {
-    console.log('F - Row index = ', (boardSize-1) - i);
-    console.log('F - Col index = ', i);
-
-    console.log('S - Row index = ', (boardSize) - i);
-    console.log('S - Col index = ', i - 1);
-
-    console.log(`${board[(boardSize-1) - i][i]} - ${board[boardSize - i][i - 1]}`);
+    // console.log(`${board[(boardSize-1) - i][i]} - ${board[boardSize - i][i - 1]}`);
     if ((board[(boardSize-1) - i][i] !== board[boardSize - i][i - 1])
       || board[boardSize - i][i - 1] == '') {
       return false;
@@ -61,8 +53,19 @@ function checkDiagonalDT() {
   return true;
 }
 
+function availablePlaces() {
+  for (let i = 0; i < boardSize; i++) {
+    for (let j = 0; j < boardSize; j++) {
+      if (board[i][j] == '') {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 function isGameOver() {
-  let winner = false;
+  let winner = null;
 
   // Check horizontal same
   for (let i = 0; i < boardSize; i++) {
@@ -83,10 +86,27 @@ function isGameOver() {
     winner = board[0][0];
   }
   if (checkDiagonalDT()) {
-    winner = board[boardSize][0];
+    winner = board[boardSize-1][0];
   }
 
-  return winner
+  if(winner == null && !availablePlaces()){
+    return 'tie';
+  }
+
+  return winner;
+}*/
+
+function setup() {
+  createCanvas(500, 500);
+  background(255);
+  strokeWeight(5);
+
+  w = width / boardSize;
+  h = height / boardSize;
+
+  drawBoard();
+  //pcTurn();
+
 }
 
 function drawBoard() {
@@ -95,7 +115,6 @@ function drawBoard() {
   line(0, h, width, h);
 
   for (let i = 0; i < divisions; i++) {
-    //line(w * (i+1) * divisions, 0, w * (i+1) * divisions, height);
     line(w * (i + 1), 0, w * (i + 1), height);
     line(0, h * (i + 1), width, h * (i + 1));
   }
@@ -110,19 +129,70 @@ function drawBoard() {
 
 }
 
-function setup() {
-  createCanvas(500, 500);
-  background(255);
-  strokeWeight(5);
+function equals3(a, b, c) {
+  return a == b && b == c && a != '';
+}
 
-  w = width / boardSize;
-  h = height / boardSize;
+function checkWinner() {
+  let winner = null;
 
-  drawBoard();
+  // horizontal
+  for (let i = 0; i < 3; i++) {
+    if (equals3(board[i][0], board[i][1], board[i][2])) {
+      winner = board[i][0];
+    }
+  }
+
+  // Vertical
+  for (let i = 0; i < 3; i++) {
+    if (equals3(board[0][i], board[1][i], board[2][i])) {
+      winner = board[0][i];
+    }
+  }
+
+  // Diagonal
+  if (equals3(board[0][0], board[1][1], board[2][2])) {
+    winner = board[0][0];
+  }
+  if (equals3(board[2][0], board[1][1], board[0][2])) {
+    winner = board[2][0];
+  }
+
+  let openSpots = 0;
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (board[i][j] == '') {
+        openSpots++;
+      }
+    }
+  }
+
+  if (winner == null && openSpots == 0) {
+    return 'tie';
+  } else {
+    return winner;
+  }
+}
+
+function mousePressed() {
+  // console.log(checkDiagonalDT());
+  if (currPlayer == person) {
+    // Get mouse coordinates
+    let j = floor(mouseX / w);
+    let i = floor(mouseY / h);
+
+    // Check if empty
+    if (board[i][j] === '') {
+      board[i][j] = person;
+      currentPlayer = pc;
+      pcTurn();
+    }
+  }
 }
 
 function draw() {
   // Draw figures
+  console.log('Curr Player = ', currPlayer);
   for (let i = 0; i < boardSize; i++) {
     for (let j = 0; j < boardSize; j++) {
       let x = w * j + w / 2;
@@ -143,20 +213,16 @@ function draw() {
       }
     }
   }
-}
 
-function mousePressed() {
-  // console.log(checkDiagonalDT());
-  if (currPlayer == person) {
-    // Get mouse coordinates
-    let j = floor(mouseX / w);
-    let i = floor(mouseY / h);
-
-    // Check if empty
-    if (board[i][j] === '') {
-      board[i][j] = person;
-      currentPlayer = pc;
-      pcTurn();
+  let result = checkWinner();
+  if (result != null) {
+    noLoop();
+    let resultP = createP('');
+    resultP.style('font-size', '32pt');
+    if (result == 'tie') {
+      resultP.html('Tie!');
+    } else {
+      resultP.html(`${result} wins!`);
     }
   }
 }

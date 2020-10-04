@@ -7,10 +7,9 @@ function pcTurn() {
     for (let j = 0; j < boardSize; j++) {
       if (board[i][j] === '') {
         board[i][j] = pc;
-        let outcome = minimax(board, 0, false);
+        let outcome = minimax(board, false);
         board[i][j] = '';
         if (outcome > bestOutcome) {
-          console.log(`i = ${i} - j ${j}`);
           bestOutcome = outcome;
           iMove = i;
           jMove = j;
@@ -18,8 +17,11 @@ function pcTurn() {
       }
     }
   }
+  console.log(`iMove = ${iMove} - jMove = ${jMove}`);
+
   board[iMove][jMove] = pc;
   currPlayer = person;
+  console.log('End pcTurn');
 }
 
 let outcomes = {
@@ -28,11 +30,38 @@ let outcomes = {
   tie: 0
 }
 
-function minimax(board, depth, isMaximizing) {
-  let result = isGameOver();
-  if(result){
-    console.log("Winner = ", result);
+function minimax(board, isMax) {
+  let winner = checkWinner();
+  if (winner !== null) {
+    console.log('Winner = ', winner);
+    return outcomes[winner];
   }
-  return 1
 
+  if(isMax){
+    let bestOutcome = -Infinity;
+    for(let i = 0; i < boardSize; i++){
+      for(let j = 0; j < boardSize; j++){
+        if(board[i][j] == ''){
+          board[i][j] = pc;
+          let outcome = minimax(board, false);
+          board[i][j] == '';
+          bestOutcome = max(outcome, bestOutcome);
+        }
+      }
+    }
+    return bestOutcome;
+  } else {
+    let bestOutcome = Infinity;
+    for(let i = 0; i < boardSize; i++){
+      for(let j = 0; j < boardSize; j++){
+        if(board[i][j] == ''){
+          board[i][j] = person;
+          let outcome = minimax(board, true);
+          board[i][j] == '';
+          bestOutcome = min(outcome, bestOutcome);
+        }
+      }
+    }
+    return bestOutcome;
+  }
 }
