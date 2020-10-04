@@ -3,13 +3,13 @@ let board = [];
 let w;
 let h;
 
-var pc = 'O';
-var person = 'X';
+var pc = 'X';
+var person = 'O';
 var currPlayer = person;
 
 let boardSize = 3;
 
-/*
+
 function checkHorizontal(list) {
   for (i = 1; i < list.length; i++) {
     // console.log(`${list[i - 1]} - ${list[i]}`);
@@ -94,18 +94,17 @@ function isGameOver() {
   }
 
   return winner;
-}*/
+}
 
 function setup() {
   createCanvas(500, 500);
   background(255);
   strokeWeight(5);
-
   w = width / boardSize;
   h = height / boardSize;
-
   drawBoard();
-  //pcTurn();
+
+  // pcTurn();
 
 }
 
@@ -126,60 +125,13 @@ function drawBoard() {
     }
     board.push(row);
   }
-
-}
-
-function equals3(a, b, c) {
-  return a == b && b == c && a != '';
-}
-
-function checkWinner() {
-  let winner = null;
-
-  // horizontal
-  for (let i = 0; i < 3; i++) {
-    if (equals3(board[i][0], board[i][1], board[i][2])) {
-      winner = board[i][0];
-    }
-  }
-
-  // Vertical
-  for (let i = 0; i < 3; i++) {
-    if (equals3(board[0][i], board[1][i], board[2][i])) {
-      winner = board[0][i];
-    }
-  }
-
-  // Diagonal
-  if (equals3(board[0][0], board[1][1], board[2][2])) {
-    winner = board[0][0];
-  }
-  if (equals3(board[2][0], board[1][1], board[0][2])) {
-    winner = board[2][0];
-  }
-
-  let openSpots = 0;
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      if (board[i][j] == '') {
-        openSpots++;
-      }
-    }
-  }
-
-  if (winner == null && openSpots == 0) {
-    return 'tie';
-  } else {
-    return winner;
-  }
 }
 
 function mousePressed() {
-  // console.log(checkDiagonalDT());
   if (currPlayer == person) {
     // Get mouse coordinates
-    let j = floor(mouseX / w);
-    let i = floor(mouseY / h);
+    let i = floor(mouseX / w);
+    let j = floor(mouseY / h);
 
     // Check if empty
     if (board[i][j] === '') {
@@ -192,21 +144,20 @@ function mousePressed() {
 
 function draw() {
   // Draw figures
-  console.log('Curr Player = ', currPlayer);
   for (let i = 0; i < boardSize; i++) {
     for (let j = 0; j < boardSize; j++) {
-      let x = w * j + w / 2;
-      let y = h * i + h / 2;
+      let x = w * i + w / 2;
+      let y = h * j + h / 2;
 
       let spot = board[i][j];
 
       textSize(28);
       let size = w / 6;
-      if (spot == pc) {
+      if (spot == person) {
         stroke('#a100f4');
         noFill();
         ellipse(x, y, size * 2);
-      } else if (spot == person) {
+      } else if (spot == pc) {
         stroke('#f47c00');
         line(x - size, y - size, x + size, y + size);
         line(x + size, y - size, x - size, y + size);
@@ -214,7 +165,7 @@ function draw() {
     }
   }
 
-  let result = checkWinner();
+  let result = isGameOver();
   if (result != null) {
     noLoop();
     let resultP = createP('');

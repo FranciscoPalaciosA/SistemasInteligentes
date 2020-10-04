@@ -1,50 +1,47 @@
 function pcTurn() {
-  let bestOutcome = -Infinity;
+  // AI to make its turn
+  let bestScore = -Infinity;
   let iMove;
   let jMove;
-
   for (let i = 0; i < boardSize; i++) {
     for (let j = 0; j < boardSize; j++) {
-      if (board[i][j] === '') {
+      // Is the spot available?
+      if (board[i][j] == '') {
         board[i][j] = pc;
-        let outcome = minimax(board, false);
+        let score = minimax(board, false);
         board[i][j] = '';
-        if (outcome > bestOutcome) {
-          bestOutcome = outcome;
+        if (score > bestScore) {
+          bestScore = score;
           iMove = i;
           jMove = j;
         }
       }
     }
   }
-  console.log(`iMove = ${iMove} - jMove = ${jMove}`);
-
   board[iMove][jMove] = pc;
-  currPlayer = person;
-  console.log('End pcTurn');
+  currentPlayer = person;
 }
 
 let outcomes = {
   X: 1,
   O: -1,
   tie: 0
-}
+};
 
 function minimax(board, isMax) {
-  let winner = checkWinner();
+  let winner = isGameOver();
   if (winner !== null) {
-    console.log('Winner = ', winner);
     return outcomes[winner];
   }
 
-  if(isMax){
+  if (isMax) {
     let bestOutcome = -Infinity;
-    for(let i = 0; i < boardSize; i++){
-      for(let j = 0; j < boardSize; j++){
-        if(board[i][j] == ''){
+    for (let i = 0; i < boardSize; i++) {
+      for (let j = 0; j < boardSize; j++) {
+        if (board[i][j] == '') {
           board[i][j] = pc;
           let outcome = minimax(board, false);
-          board[i][j] == '';
+          board[i][j] = '';
           bestOutcome = max(outcome, bestOutcome);
         }
       }
@@ -52,12 +49,12 @@ function minimax(board, isMax) {
     return bestOutcome;
   } else {
     let bestOutcome = Infinity;
-    for(let i = 0; i < boardSize; i++){
-      for(let j = 0; j < boardSize; j++){
-        if(board[i][j] == ''){
+    for (let i = 0; i < boardSize; i++) {
+      for (let j = 0; j < boardSize; j++) {
+        if (board[i][j] == '') {
           board[i][j] = person;
           let outcome = minimax(board, true);
-          board[i][j] == '';
+          board[i][j] = '';
           bestOutcome = min(outcome, bestOutcome);
         }
       }
