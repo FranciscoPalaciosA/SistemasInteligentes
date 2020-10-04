@@ -5,21 +5,185 @@
   <script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.min.js"></script>
   <meta charset="utf-8" />
   <style>
-    main {
+    body {
+      background-color: #F5F5F5;
+      color: #555;
+      font-size: 1.1em;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    main {
+      display: grid;
+      height: 100vh;
+      max-width: 90vw;
+      margin: 0 auto;
+      grid-template-columns: 300px 1fr;
+      grid-template-areas: "header header"
+        "stats main"
+        "score main"
+      ;
+      grid-template-rows: 50px minmax(300px, 1fr) 1fr;
+    }
+
+    h2 {
+      font-size: 1.7em;
+    }
+
+    h2 span {
+      font-size: 1.5em;
+      display: block;
+    }
+
+    .item {
+      padding: 5px 10px;
+      background: #5c1919;
+    }
+
+    .header {
+      grid-area: header;
+      background: #001162;
+      padding: 0 20px;
+    }
+
+    .header h2 {
+      margin: 0;
+    }
+
+    .stats {
+      grid-area: stats;
+      background: white;
       display: flex;
+      flex-direction: column;
+    }
 
-      /* This centers our sketch horizontally. */
+    .main {
+      background-image: url('./board.jpg');
+      background-position: center;
+      grid-area: main;
+      background-size: cover;
+    }
+
+    .score,
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: white;
+    }
+
+    .item.score {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
+    .check {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .btn-open {
+      display: none;
+    }
+
+    #sketch-div {
+      width: 100%;
+      height: 100%;
+      display: flex;
       justify-content: center;
-
-      /* This centers our sketch vertically. */
       align-items: center;
     }
 
+    .narrow {
+      width: 60%;
+      margin: auto;
+    }
+
+    @media screen and (max-width: 800px) {
+      body {
+        font-size: 13px;
+      }
+
+      main {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      h2 span {
+        display: inline;
+      }
+
+      .main,
+      .stats {
+        grid-column: 1/span 2;
+        grid-row: 2/span 3;
+      }
+
+      .score {
+        grid-column: 2/span 1;
+        grid-row: 1;
+        padding: 0 20px;
+        font-size: 0.5em;
+      }
+
+      .btn-open {
+        display: block;
+        padding: 5px 20px;
+        background: rgba(113, 113, 113, 0.47);
+        grid-row: 3;
+        grid-column: 1;
+        height: 50px;
+        line-height: 50px;
+        color: white;
+        align-self: end;
+        z-index: 6;
+      }
+
+      .stats {
+        opacity: 0;
+        pointer-events: none;
+        z-index: 5;
+      }
+
+      .check:checked~main>.stats {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
   </style>
 </head>
 
 <body>
+
+  <main>
+    <header class="item header">
+      <h2>Unbeatable Tic Tac Toe</h2>
+    </header>
+    <div class="item stats">
+      <div class="">
+        <h2>Who starts?</h2>
+        <select class="narrow" name="start" id="start">
+          <option value="pc">AI</option>
+          <option value="person">You</option>
+        </select>
+      </div>
+      <button class="narrow" onclick="restart()">Restart</button>
+    </div>
+    <div class="item main">
+      <div id="sketch-div"></div>
+    </div>
+    <div class="item score">
+      <div>O - You: <span id="O">0</span></div>
+      <div>X - AI: <span id="X">0</span></div>
+      <div>Tie: <span id="tie">0</span></div>
+    </div>
+    <label class="btn-open" for="check">STATS</label>
+  </main>
+
   <script src="ai.js"></script>
   <script src="board.js"></script>
 </body>

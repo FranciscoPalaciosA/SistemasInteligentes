@@ -18,8 +18,12 @@ function pcTurn() {
       }
     }
   }
-  board[iMove][jMove] = pc;
-  currentPlayer = person;
+  if(availablePlaces()){
+    setTimeout(() => {
+      board[iMove][jMove] = pc;
+      currPlayer = person;
+    },1000);
+  }
 }
 
 let outcomes = {
@@ -33,7 +37,7 @@ function minimax(board, isMax) {
   if (winner !== null) {
     return outcomes[winner];
   }
-
+  
   if (isMax) {
     let bestOutcome = -Infinity;
     for (let i = 0; i < boardSize; i++) {
