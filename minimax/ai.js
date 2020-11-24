@@ -1,11 +1,9 @@
 function pcTurn() {
-  // AI to make its turn
   let bestScore = -Infinity;
   let iMove;
   let jMove;
   for (let i = 0; i < boardSize; i++) {
     for (let j = 0; j < boardSize; j++) {
-      // Is the spot available?
       if (board[i][j] == '') {
         board[i][j] = pc;
         let score = minimax(board, false);
@@ -22,6 +20,7 @@ function pcTurn() {
     setTimeout(() => {
       board[iMove][jMove] = pc;
       currPlayer = person;
+      whosTurn.innerText = "It's your turn";
     },1000);
   }
 }

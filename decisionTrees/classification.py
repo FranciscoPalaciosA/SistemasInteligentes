@@ -8,14 +8,14 @@ import random
 
 # Need X = [[]], y = []
 def shapeData():
-    # https://archive.ics.uci.edu/ml/datasets/Tic-Tac-Toe+Endgame
-    f = open("tic-tac-toe.data", "r")
+    # https://archive.ics.uci.edu/ml/datasets/Divorce+Predictors+data+set
+    f = open("divorce.csv", "r")
     Lines = f.readlines()
     random.shuffle(Lines)
     X = []
     y = []
     for line in Lines:
-        d = line.rstrip('\n').split(',')
+        d = line.rstrip('\n').split(';')
         y.append(d.pop())
         X.append(d)
 
@@ -41,22 +41,33 @@ from sklearn import tree
 import graphviz
 
 features = [
-    'top-left-square', 'top-middle-square', 'top-right-square',
-    'middle-left-square', 'middle-middle-square', 'middle-right-square',
-    'bottom-left-square', 'bottom-middle-square', 'bottom-right-square'
+    'Atr1', 'Atr2', 'Atr3', 'Atr4', 'Atr5', 'Atr6', 'Atr7', 'Atr8', 'Atr9',
+    'Atr10', 'Atr11', 'Atr12', 'Atr13', 'Atr14', 'Atr15', 'Atr16', 'Atr17',
+    'Atr18', 'Atr19', 'Atr20', 'Atr21', 'Atr22', 'Atr23', 'Atr24', 'Atr25',
+    'Atr26', 'Atr27', 'Atr28', 'Atr29', 'Atr30', 'Atr31', 'Atr32', 'Atr33',
+    'Atr34', 'Atr35', 'Atr36', 'Atr37', 'Atr38', 'Atr39', 'Atr40', 'Atr41',
+    'Atr42', 'Atr43', 'Atr44', 'Atr45', 'Atr46', 'Atr47', 'Atr48', 'Atr49',
+    'Atr50', 'Atr51', 'Atr52', 'Atr53', 'Atr54'
 ]
 
 dot = tree.export_graphviz(tree_clf,
                            out_file=None,
                            feature_names=features,
-                           class_names=['X win', 'X lose'],
+                           class_names=['No', 'Yes'],
                            filled=True,
                            rounded=True,
                            special_characters=True)
 
 # we create a graph from dot source using graphviz.Source
 graph = graphviz.Source(dot)
-graph.render(filename="tic-tac-toe-tree-shuffled", format='pdf', view=False)
+graph.render(filename="divorced", format='pdf', view=False)
 
-# probs = tree_clf.predict_proba([[1,1,1,0,1,-1,0,1,-1]])
-# print("probability of class for query",[[1,1,1,0,1,-1,0,1,-1]],probs)
+correct = 0
+for i in range(0, len(y_test)):
+    probs = tree_clf.predict([X_test[i]])
+    #print('real = ', y_test[i])
+    #print('probs = ', probs[0])
+    if y_test[i] == probs[0]:
+        correct += 1
+
+print('Correct percentage = ', correct / len(y_test) * 100)

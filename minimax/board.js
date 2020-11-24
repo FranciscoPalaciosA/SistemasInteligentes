@@ -112,12 +112,29 @@ function setup() {
   strokeWeight(5);
   w = width / boardSize;
   h = height / boardSize;
-  currPlayer = person
   stroke('white');
   drawBoard();
   loop();
-  // pcTurn();
 
+  let whoStarts = document.getElementById('start').value;
+  let whosTurn = document.getElementById('whosTurn');
+
+  if(whoStarts === 'random'){
+    if (Math.random() > 0.5){
+      whoStarts = 'pc'
+    } else {
+      whoStarts = 'person';
+    }
+  } 
+  
+  if(whoStarts === 'pc') {
+    pcTurn();
+    currPlayer = pc;
+    whosTurn.innerText = "I'm thinking...";
+  } else {
+    currPlayer = person;
+    whosTurn.innerText = "It's your turn";
+  }
 }
 
 function drawBoard() {
@@ -152,6 +169,7 @@ function mousePressed() {
       board[i][j] = person;
       currPlayer = pc;
       pcTurn();
+      whosTurn.innerText = "I'm thinking...";
     }
   }
 }
@@ -182,8 +200,19 @@ function draw() {
   let outcome = isGameOver();
   if (outcome != null) {
     scores[outcome]++;
-    console.log(scores);
     document.getElementById(outcome).innerText = scores[outcome];
     noLoop();
+
+    let message = '';
+    if(outcome === 'tie'){
+      message = "It's a tie!"
+    } else {
+      message = `The winner is ${outcome}`
+    }
+    setTimeout(()=>{
+      if(confirm(message + ' Play again?')){
+        setup();
+      }
+    }, 500);
   }
 }

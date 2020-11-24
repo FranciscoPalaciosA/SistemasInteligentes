@@ -154,6 +154,17 @@
         pointer-events: auto;
       }
     }
+
+    .config-text {
+      font-size: 32px;
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    .config-text.small {
+      font-size: 28px;
+      margin-top: 8px;
+    }
   </style>
 </head>
 
@@ -165,12 +176,14 @@
     </header>
     <div class="item stats">
       <div class="">
-        <h2>Who starts?</h2>
+        <div class="config-text small">Who starts?</div>
         <select class="narrow" name="start" id="start">
+          <option value="random">Random</option>
           <option value="pc">AI</option>
           <option value="person">You</option>
         </select>
       </div>
+      <div id="whosTurn" class="config-text"> It's your turn </div>
       <button class="narrow" onclick="restart()">Restart</button>
     </div>
     <div class="item main">
