@@ -5,7 +5,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import random
 
-
 # Need X = [[]], y = []
 def shapeData():
     # https://archive.ics.uci.edu/ml/datasets/Divorce+Predictors+data+set
@@ -34,7 +33,9 @@ y_test, y_train = get_sets(y)
 
 from sklearn.tree import DecisionTreeClassifier
 
-tree_clf = DecisionTreeClassifier(max_depth=4)
+tree_clf = DecisionTreeClassifier(max_features=5,
+                                  random_state=14,
+                                  max_depth=4)
 tree_clf.fit(X_train, y_train)
 
 from sklearn import tree
@@ -50,10 +51,11 @@ features = [
     'Atr50', 'Atr51', 'Atr52', 'Atr53', 'Atr54'
 ]
 
+classNames = ['No', 'Yes']
 dot = tree.export_graphviz(tree_clf,
                            out_file=None,
                            feature_names=features,
-                           class_names=['No', 'Yes'],
+                           class_names=classNames,
                            filled=True,
                            rounded=True,
                            special_characters=True)
@@ -65,9 +67,17 @@ graph.render(filename="divorced", format='pdf', view=False)
 correct = 0
 for i in range(0, len(y_test)):
     probs = tree_clf.predict([X_test[i]])
-    #print('real = ', y_test[i])
-    #print('probs = ', probs[0])
     if y_test[i] == probs[0]:
         correct += 1
 
 print('Correct percentage = ', correct / len(y_test) * 100)
+
+while True:
+  ind1, val1, ind2, val2, ind3, val3 = input("Enter your values: ").split()
+  randomPrediction = []
+  for i in range(54):
+    randomPrediction.append(random.randrange(4))
+  randomPrediction[int(ind1)+1] = val1
+  randomPrediction[int(ind2)+1] = val2
+  randomPrediction[int(ind3)+2] = val3
+  print('Prediction = ', classNames[int(tree_clf.predict([randomPrediction])[0])])
